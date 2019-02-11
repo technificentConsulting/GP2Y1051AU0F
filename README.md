@@ -18,7 +18,7 @@ Second byte `00` is the Vout high **Vout(H)**, third byte `02` is the Vout low *
 
 `Vout = (Vout(H) * 256 + Vout(L)) / 1024 * 5`
 
-*Vout(H) and Vout(L) need to be transformed to decimal format first*
+*Vout(H) and Vout(L) need to be converted to decimal format first*
 
 Given the data chunk `AA 00 02 00 61 63 FF`, we get:
 
