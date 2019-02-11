@@ -57,7 +57,7 @@ class AIRQ():
         vout_l = self.num_format(data_array[2].encode('hex'))
 
         # Caculate the Vout
-        Vout = ((vout_h * 256) + vout_l) * 2.5 / 1024
+        Vout = ((vout_h * 256) + vout_l) * 5 / 1024
         vout = round(Vout, 3)
         return vout
 
