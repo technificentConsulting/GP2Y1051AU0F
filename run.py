@@ -19,15 +19,33 @@ ser = serial.Serial(
 )
 
 app = Flask(__name__)
-exporter_value = Gauge("dust_density", "Export the dust density value of GP2Y1051AU0F")
+dust_density_gauge = Gauge("dust_density", "dust density value of GP2Y1051AU0F")
+vout_gauge = Gauge("vout", "Vout value")
+k_gauge = Gauge("k", "k coefficient")
+
 @app.route("/metrics")
 def export_metrics():
+
     aq = airq.AIRQ(ser)
-    dust_density = aq.get_density()
-    exporter_value.set(dust_density)
-    return Response(prometheus_client.generate_latest(exporter_value), mimetype="text/plain")
+
+    data = aq.get_serial_chunk()
+    vout = aq.get_vout(data)
+    k    = aq.get_k(vout)
+
+    dust_density = aq.get_density(vout)
+
+    dust_density_gauge.set(dust_density)
+    vout_gauge.set(vout)
+    k_gauge.set(k)
+
+    output = prometheus_client.generate_latest(dust_density_gauge)
+    output += prometheus_client.generate_latest(vout_gauge)
+    output += prometheus_client.generate_latest(k_gauge)
+
+    return Response(output , mimetype="text/plain")
 
 try:
+    # print export_metrics()
     app.run(host="0.0.0.0")
     # while 1:
         # aq.show()
