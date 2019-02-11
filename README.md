@@ -35,6 +35,8 @@ By using Vout, we can caculate the dust density with a coefficient **K** where K
 
 Where **Ud** represents the dust density (ug/m3)
 
+if K = 200, then `Ud = 200 * 0.0097 = 1.94 (ug/m3)`
+
 As to where to get the **K**, please look into the code.
 
 ## Usage:
