@@ -34,7 +34,7 @@ So
 
 `Ud = K * Vout` Where **Ud** represents the dust density (ug/m3)
 
-if K = 700, then `Ud = 700 * 0.0097 = 1.94 (ug/m3)`
+if K = 700, then `Ud = 700 * 0.0097 = 6.79 (ug/m3)`
 
 K represents a specific coefficient for the GP2Y1051AU0F dust sensor. The value of K may vary, since Sharp doesn't indicate any specific value. This K value is from the internet search, so it might be not correct or accurate.
 
