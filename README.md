@@ -2,7 +2,7 @@
 Python script and Prometheus exporter for Sharp GP2Y1051AU0F Dust Sensor
 
 ## How does it work?
-The device will keep sending 7 bytes serial data every 10ms.
+The device will keep sending 1 bytes of serial data every 10ms.
 
 ### For example:
 
@@ -10,7 +10,10 @@ The device will keep sending 7 bytes serial data every 10ms.
 
 The useful data chunk is formatted as `AA 00 02 00 61 63 FF` where `AA` represents the begining byte, `FF` represents the ending byte.
 
-Second byte `00` is the Vout high **Vout(H)**, third byte `02` is the Vout low **Vout(L)**. The rest of the bytes will not be used.
+Second byte `00` is the Vout high **Vout(H)**, third byte `02` is the Vout low **Vout(L)**. Sixth byte `63` is the checksum of the sum of second to fifth byte. The rest of the bytes will not be used.
+
+To caculate checksum, we can take `AA 00 02 00 61 63 FF` for an example:
+ ``63 = 00 + 02 + 00 + 61 ``
 
 ### Caculation:
 
