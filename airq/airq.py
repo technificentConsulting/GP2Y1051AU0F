@@ -3,6 +3,7 @@
 import time
 import sys
 import serial
+import configparser
 
 class AIRQ():
     """
@@ -21,8 +22,18 @@ class AIRQ():
     """
     def __init__(self):
 
+        # reads the configuration from settings file
+        config = configparser.ConfigParser()
+
+        try:
+            config.read('settings.txt')
+            serial_port = config['airq']['port']
+        except:
+            print('Error! Please make sure that "settings.txt" file exists and properly set.')
+            exit(1)
+
         self.ser = serial.Serial(
-            port = 'COM8', # COM7 for windows
+            port = serial_port,
             baudrate = 2400,
             parity = serial.PARITY_NONE,
             stopbits = serial.STOPBITS_ONE,

@@ -1,10 +1,9 @@
 from airq import airq
-import serial
-
-import random
-import prometheus_client
 from prometheus_client import Gauge
 from flask import Response, Flask
+import serial
+import prometheus_client
+import configparser
 
 # configure the serial connections (the parameters differs on the device you are connecting to)
 # if uses Rpi serial port, the serial port login must be disable/stop first
@@ -36,9 +35,22 @@ def export_metrics():
 
     return Response(output , mimetype="text/plain")
 
+
+# reads the configuration from settings file
+config = configparser.ConfigParser()
+
+try:
+    config.read('settings.txt')
+    server_ip   = config['server']['ip']
+    server_port = config['server']['port']
+except:
+    print('Error! Please make sure that "settings.txt" file exists and properly set.')
+    exit(1)
+
 try:
     # print(export_metrics())
-    app.run(host="0.0.0.0")
+    
+    app.run(host=server_ip, port=server_port)
     # while 1:
         # aq.show()
         # debug()
