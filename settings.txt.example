@@ -1,0 +1,7 @@
+[airq]
+port = COM8
+k = 700
+
+[server]
+ip = 127.0.0.1
+port = 5000

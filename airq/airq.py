@@ -8,7 +8,7 @@ import configparser
 class AIRQ():
     """
     This program will read the data from Sharp GP2Y1051AU0F dust density sensor.
-    The device will keep sending 7 bytes serial data every 10ms.
+    The device will keep sending 1 byte serial data every 10ms.
     For example:
     AA 00 02 00 61 63 FF AA 00 02 00 61 63 FF AA 00 02 00 61 63
     FF AA 00 02 00 61 63 FF AA 00 02 00 61 63 FF ... ...
@@ -16,8 +16,7 @@ class AIRQ():
     The useful data chunk is formatted as:
     AA 00 02 00 61 63 FF
 
-    Where represents AA represents the begining byte, FF represents the ending byte.
-
+    Where AA represents the begining byte, FF represents the ending byte.
     Second byte 00 is the Vout high, third byte 02 is the Vout low
     """
     def __init__(self):
@@ -27,13 +26,14 @@ class AIRQ():
 
         try:
             config.read('settings.txt')
-            serial_port = config['airq']['port']
+            self.serial_port = config['airq']['port']
+            self.k = config['airq']['k']
         except:
             print('Error! Please make sure that "settings.txt" file exists and properly set.')
             exit(1)
 
         self.ser = serial.Serial(
-            port = serial_port,
+            port = self.serial_port,
             baudrate = 2400,
             parity = serial.PARITY_NONE,
             stopbits = serial.STOPBITS_ONE,
@@ -100,48 +100,22 @@ class AIRQ():
         vout = round(vout, 4)
         return vout
 
-    def get_k(self, vout):
+    def get_k(self):
 
         """
         K represents a specific coefficient for the GP2Y1051AU0F dust sensor.
-        The value of K will vary from the given value of Vout
-        The conditions are searched from the internet, so it might be not correct.
+        The value of K may vary, since Sharp doesn't indicate any specific value.
+        This K value is collected from the internet, so it might be not correct or accurate.
+        Please set K value in settings.txt as you like.
         """
-        if vout < 0.046:
-            return 200
-        elif vout < 0.049:
-            return 400
-        elif vout < 0.052:
-            return 600
-        elif vout < 0.055:
-            return 750
-        elif vout < 0.059:
-            return 900
-        elif vout < 0.065:
-            return 1000
-        elif vout < 0.071:
-            return 1250
-        elif vout < 0.076:
-            return 1400
-        elif vout < 0.081:
-            return 1700
-        elif vout < 0.086:
-            return 1800
-        elif vout < 0.091:
-            return 1900
-        elif vout < 0.101:
-            return 2000
-        elif vout < 0.111:
-            return 2200
-        else:
-            return 3000
+        return self.k
 
     def get_density(self, vout):
 
-        k = self.get_k(vout)
+        k = self.get_k()
 
         # Dust density, unit: ug/m3
-        density = int(k * vout)
+        density = float(k) * vout
         return density
 
 
@@ -157,7 +131,7 @@ if __name__ == '__main__':
         # print("line: " + chunk)
         # print("in_waiting: " + str(aq.ser.in_waiting) + " byte(s)")
 
-        k = aq.get_k(vout)
+        k = aq.get_k()
         density = aq.get_density(vout)
 
         sys.stdout.write("[ %s | K: %s | Vout: %s V | Dust density: %s ug/m3 ] \r" % ( byte_data, k, vout, density))
@@ -180,5 +154,5 @@ if __name__ == '__main__':
             # else:
             #     print("waiting for serial data")
     except KeyboardInterrupt:
-        ser.close()
+        aq.ser.close()
         print("\nQuit!")
