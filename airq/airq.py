@@ -31,17 +31,17 @@ class AIRQ():
     def get_serial_chunk(self):
 
         # read bytes from serial, we read the larger chunk(14 bytes) rather than 7 bytes.
-        data = self.ser.read(self.serial_expanded_measure_bytes).encode('hex')
+        data = self.ser.read(self.serial_expanded_measure_bytes)
 
         # use all the rest of the data, we want to use the real time value
-        data += self.ser.readline(self.ser.inWaiting()).encode('hex')
+        data += self.ser.readline(self.ser.inWaiting())
 
         if not data:
             return False
 
         try:
             # find out the first aa postion
-            aa_index = data.index('aa')
+            aa_index = data.index(b'\xaa')
         except ValueError:
             time.sleep(1)
 
@@ -58,7 +58,7 @@ class AIRQ():
         """
         Convert Hex value to decimal
         """
-        num_int = int(num_hex, 16)
+        num_int = int(num_hex)
         num_int = float(format(num_int, '.10f'))
         return num_int
 
@@ -68,17 +68,16 @@ class AIRQ():
         if not byte_data:
             return -1
 
-        data_array = byte_data.decode('hex')
-        vout_h = self.num_format(data_array[1].encode('hex'))
-        vout_l = self.num_format(data_array[2].encode('hex'))
+        vout_h = self.num_format(byte_data[1])
+        vout_l = self.num_format(byte_data[2])
 
-        # print "VoutH: " + str(vout_h)
-        # print "VoutL: " + str(vout_l)
+        # print("VoutH: " + str(vout_h))
+        # print("VoutL: " + str(vout_l))
 
         # Caculate the Vout
         # 0 - 5V mapped to 0 - 1023 integer values
         vout = ((vout_h * 256) + vout_l) * 5 / 1024
-        # print float(format(vout, '%.3f'))
+        # print(float(format(vout, '%.3f')))
         vout = round(vout, 4)
         return vout
 
@@ -132,12 +131,12 @@ if __name__ == '__main__':
     def show(aq):
         byte_data = aq.get_serial_chunk()
         vout = aq.get_vout(byte_data)
-        # print "vout: " + str(vout)
+        # print("vout: " + str(vout))
         if not byte_data:
-            print "Waiting for serial data..."
+            print("Waiting for serial data...")
 
-        # print "line: " + chunk
-        # print "in_waiting: " + str(aq.ser.in_waiting) + " byte(s)"
+        # print("line: " + chunk)
+        # print("in_waiting: " + str(aq.ser.in_waiting) + " byte(s)")
 
         k = aq.get_k(vout)
         density = aq.get_density(vout)
@@ -148,7 +147,7 @@ if __name__ == '__main__':
 
     try:
         ser = serial.Serial(
-            port = 'COM7', # COM7 for windows
+            port = 'COM8', # COM7 for windows
             baudrate = 2400,
             parity = serial.PARITY_NONE,
             stopbits = serial.STOPBITS_ONE,
@@ -163,12 +162,12 @@ if __name__ == '__main__':
             # vout = aq.get_vout()
             # density = aq.get_density(vout)
             # if data:
-            #     print data
-            #     print vout
-            #     print density
+            #     print(data)
+            #     print(vout)
+            #     print(density)
             #     time.sleep(1)
             # else:
-            #     print "waiting for serial data"
+            #     print("waiting for serial data")
     except KeyboardInterrupt:
         ser.close()
-        print "\nQuit!"
+        print("\nQuit!")

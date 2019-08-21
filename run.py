@@ -10,7 +10,7 @@ from flask import Response, Flask
 # if uses Rpi serial port, the serial port login must be disable/stop first
 # sudo systemctl stop serial-getty@ttyS0.service
 ser = serial.Serial(
-    port = 'COM7', # COM7 for windows
+    port = 'COM8', # COM7 for windows
     baudrate = 2400,
     parity = serial.PARITY_NONE,
     stopbits = serial.STOPBITS_ONE,
@@ -45,12 +45,12 @@ def export_metrics():
     return Response(output , mimetype="text/plain")
 
 try:
-    # print export_metrics()
+    # print(export_metrics())
     app.run(host="0.0.0.0")
     # while 1:
         # aq.show()
         # debug()
-        # print get_serial_data()
+        # print(get_serial_data())
         # time.sleep(1)
 
 except KeyboardInterrupt:
