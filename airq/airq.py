@@ -19,8 +19,16 @@ class AIRQ():
 
     Second byte 00 is the Vout high, third byte 02 is the Vout low
     """
-    def __init__(self, ser):
-        self.ser = ser
+    def __init__(self):
+
+        self.ser = serial.Serial(
+            port = 'COM8', # COM7 for windows
+            baudrate = 2400,
+            parity = serial.PARITY_NONE,
+            stopbits = serial.STOPBITS_ONE,
+            bytesize = serial.EIGHTBITS,
+            timeout = 1
+        )
 
         # The device will keep sending 7 bytes data every 100ms
         self.serial_measure_bytes = 7
@@ -146,16 +154,8 @@ if __name__ == '__main__':
         time.sleep(1)
 
     try:
-        ser = serial.Serial(
-            port = 'COM8', # COM7 for windows
-            baudrate = 2400,
-            parity = serial.PARITY_NONE,
-            stopbits = serial.STOPBITS_ONE,
-            bytesize = serial.EIGHTBITS,
-            timeout = 1
-        )
 
-        aq = AIRQ(ser)
+        aq = AIRQ()
         while 1:
             show(aq)
             # data = aq.get_serial_chunk()
