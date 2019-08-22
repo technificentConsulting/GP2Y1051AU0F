@@ -52,8 +52,10 @@ class AIRQ():
         # read bytes from serial, we read the larger chunk(14 bytes) rather than 7 bytes.
         data = self.ser.read(self.serial_expanded_measure_bytes)
 
+        self.ser.flush()
+        
         # use all the rest of the data, we want to use the real time value
-        data += self.ser.readline(self.ser.inWaiting())
+        #data += self.ser.readline(self.ser.inWaiting())
 
         if not data:
             return False
@@ -64,9 +66,8 @@ class AIRQ():
         except ValueError:
             time.sleep(1)
 
-        # The data is a string not a hex array, so we need to count the
-        # element as charachater, 1 hex byte contains 2 charachaters
-        ff_index = aa_index + self.serial_measure_bytes * 2
+        ## we will read 7 bytes in total
+        ff_index = aa_index + self.serial_measure_bytes
 
         # Get the formmated chunk which start from AA, end with FF
         formatted_chunk = data[aa_index:ff_index]
@@ -134,7 +135,7 @@ if __name__ == '__main__':
         k = aq.get_k()
         density = aq.get_density(vout)
 
-        sys.stdout.write("[ %s | K: %s | Vout: %s V | Dust density: %s ug/m3 ] \r" % ( byte_data, k, vout, density))
+        sys.stdout.write("[ %s | K: %s | Vout: %5.4f V | Dust density: %5.2f ug/m3 ] \r" % ( byte_data.hex(), k, vout, density))
         sys.stdout.flush()
         time.sleep(1)
 
