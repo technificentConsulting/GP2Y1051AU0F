@@ -21,7 +21,7 @@ def export_metrics():
 
     data = aq.get_serial_chunk()
     vout = aq.get_vout(data)
-    k    = aq.get_k(vout)
+    k    = aq.get_k()
 
     dust_density = aq.get_density(vout)
 
