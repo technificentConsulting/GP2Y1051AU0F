@@ -4,6 +4,7 @@ import time
 import sys
 import serial
 import configparser
+import os
 
 class AIRQ():
     """
@@ -23,9 +24,12 @@ class AIRQ():
 
         # reads the configuration from settings file
         config = configparser.ConfigParser()
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        settings_file_path = dir_path + '/../settings.txt'
 
         try:
-            config.read('settings.txt')
+            config.read(settings_file_path)
+            print(config)
             self.serial_port = config['airq']['port']
             self.k = config['airq']['k']
         except:
@@ -53,7 +57,7 @@ class AIRQ():
         data = self.ser.read(self.serial_expanded_measure_bytes)
 
         self.ser.flush()
-        
+
         # use all the rest of the data, we want to use the real time value
         #data += self.ser.readline(self.ser.inWaiting())
 

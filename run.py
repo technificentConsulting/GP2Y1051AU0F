@@ -4,6 +4,7 @@ from flask import Response, Flask
 import serial
 import prometheus_client
 import configparser
+import os
 
 # configure the serial connections (the parameters differs on the device you are connecting to)
 # if uses Rpi serial port, the serial port login must be disable/stop first
@@ -39,8 +40,10 @@ def export_metrics():
 # reads the configuration from settings file
 config = configparser.ConfigParser()
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
+settings_file_path = dir_path + '/settings.txt'
 try:
-    config.read('settings.txt')
+    config.read(settings_files_path)
     server_ip   = config['server']['ip']
     server_port = config['server']['port']
 except:
