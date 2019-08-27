@@ -39,11 +39,11 @@ def export_metrics():
 
 # reads the configuration from settings file
 config = configparser.ConfigParser()
-
 dir_path = os.path.dirname(os.path.realpath(__file__))
 settings_file_path = dir_path + '/settings.txt'
+
 try:
-    config.read(settings_files_path)
+    config.read(settings_file_path)
     server_ip   = config['server']['ip']
     server_port = config['server']['port']
 except:
@@ -52,7 +52,7 @@ except:
 
 try:
     # print(export_metrics())
-    
+
     app.run(host=server_ip, port=server_port)
     # while 1:
         # aq.show()
