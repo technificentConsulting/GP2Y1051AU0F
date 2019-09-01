@@ -5,3 +5,14 @@ k = 700
 [server]
 ip = 127.0.0.1
 port = 5000
+
+[pwm]
+pin_number = 18 # Raspberry pi GPIO pwm pin
+steps = 4
+
+# steps of pwm duty cycle, eg:
+# 0 - 0 (Not using pwm)
+# 1 - 100%
+# 2 - 50%, 100%
+# 3 - 33%, 67%, 100%
+# 4 - 25%, 50%, 75%, 100%
