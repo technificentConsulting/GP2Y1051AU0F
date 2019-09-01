@@ -30,14 +30,17 @@ class AIRQ():
         try:
             config.read(settings_file_path)
             print(config)
-            self.serial_port = config['airq']['port']
-            self.k = config['airq']['k']
+            self.config = config
+            # self.serial_port = config['airq']['port']
+            # self.k           = config['airq']['k']
+            # self.server_ip   = config['server']['ip']
+            # self.server_port = config['server']['port']
         except:
             print('Error! Please make sure that "settings.txt" file exists and properly set.')
             exit(1)
 
         self.ser = serial.Serial(
-            port = self.serial_port,
+            port = self.config['airq']['port'],
             baudrate = 2400,
             parity = serial.PARITY_NONE,
             stopbits = serial.STOPBITS_ONE,
@@ -113,7 +116,8 @@ class AIRQ():
         This K value is collected from the internet, so it might be not correct or accurate.
         Please set K value in settings.txt as you like.
         """
-        return self.k
+        k = self.config['airq']['k']
+        return k
 
     def get_density(self, vout):
 
